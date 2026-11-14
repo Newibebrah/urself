@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kopi Senja | Website Sederhana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #FAFAFA;
+      --text: #0F172A;
+      --muted: #64748B;
+      --accent: #059669;
+      --accent-light: #86EFAC;
+      --card: #FFFFFF;
+      --border: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    /* CTA Buttons */
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.875rem 1.75rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #047857;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+
+    .btn-secondary:hover {
+      background: var(--accent-light);
+      color: white;
+    }
+
+    /* Features Section */
+    .features {
+      max-width: 800px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+
+    .features h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-item {
+      padding: 1.5rem;
+      background: var(--card);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      transition: transform 0.2s ease;
+    }
+
+    .feature-item:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 0.75rem;
+      background: var(--accent-light);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1.25rem;
+    }
+
+    /* About Section */
+    .about {
+      max-width: 800px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .about p {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+
+    /* Nav */
+    .nav {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 100;
+    }
+
+    .nav-link {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      color: var(--text);
+      background: white;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      font-size: 0.875rem;
+      transition: background 0.2s;
+    }
+
+    .nav-link:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .feature-item {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="#" class="nav-link">Beranda</a>
+    <a href="#features" class="nav-fitur">Fitur</a>
+    <a href="#about" class="nav-tentang">Tentang</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Kopi Senja</h1>
+    <p>Warna mengengkek, hangat di setiap sentuhan. Nikmati kenikmatan kopi hasil panen tangan dari perkebunan Aceh Gayo.</p>
+    <div class="cta-group">
+      <button class="btn btn-primary">Pesan Sekarang</button>
+      <button class="btn-secondary">Lihat Menu</button>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <h2>Mengapa Memilih Kopi Senja?</h2>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <div class="feature-icon">☕</div>
+        <h3>Kopi Results Tangan</h3>
+        <p>Panen tangan selektif dari petani lokal.</p>
+      </li>
+      <li class="feature-item">
+        <div class="feature-icon">🌱</div>
+        <h3>Berbasis Lestari</h3>
+        <p>Mitra kerja yang menghormati lingkungan.</p>
+      </li>
+      <li class="feature-item">
+        <div class="feature-icon">🔥</div>
+        <h3>Ritual Malam</h3>
+        <p>Ideal untuk malam hangat dengan teman atau keluarga.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- About -->
+  <section class="about" id="about">
+    <h2>Tentang Kami</h2>
+    <p>Kopi Senja adalah brand kopi premium dari perkebunan Aceh Gayo, berkomitmen menyajikan pengalaman minum kopi yang autentik dan berwarna mengengkek untuk setiap momen spesial.</p>
+    <p>Kami percaya bahwa setiap gelas kopi adalah momen untuk beristirahat, merenung, dan menghargai keindahan sehari-hari.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Kopi Senja • Dibangun dengan ❤️ • 2024</p>
+  </footer>
+
+</body>
+</html>

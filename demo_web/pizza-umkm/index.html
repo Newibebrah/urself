@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizza Jaya UMKM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Merriweather:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a2e;
+      --muted: #4a4a6a;
+      --accent: #e83e8c;
+      --accent-hover: #d63384;
+      --card: #f8f9fa;
+      --border: #dee2e6;
+      --primary: #ff6b6b;
+      --secondary: #4ecdc4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Navigasi */
+    .nav {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+    }
+
+    .nav-link {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      color: var(--text);
+      background: white;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .nav-link:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .nav-link.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Header */
+    header {
+      margin-top: 6rem;
+      padding: 0 2rem 2rem;
+    }
+
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-family: 'Merriweather', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 400px;
+      background: linear-gradient(135deg, #fff0f5 0%, #ffffff 100%);
+      border-radius: 2rem;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin: 8rem 2rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(232, 52, 140, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.25rem;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+
+    /* Menu Section */
+    .menu {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem 2rem;
+    }
+
+    .menu h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: var(--text);
+    }
+
+    .pizza-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .pizza-card {
+      background: var(--card);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pizza-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border-color: var(--accent);
+    }
+
+    .pizza-img {
+      width: 100%;
+      height: 180px;
+      background: #eee;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .pizza-card h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.125rem;
+    }
+
+    .pizza-card p {
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .pizza-card .harga {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* About Section */
+    .about {
+      max-width: 800px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .about p {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+    }
+
+    /* Contact */
+    .contact {
+      max-width: 500px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: var(--card);
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+    }
+
+    .contact h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .contact p {
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+    }
+
+    .contact .telpon {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-top: 4rem;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .pizza-card {
+        transition: none;
+      }
+    }
+
+    /* Tablet */
+    @media (max-width: 768px) {
+      .nav {
+        position: static;
+        backdrop-filter: none;
+        border: none;
+        padding: 0;
+      }
+
+      .nav-link {
+        display: inline-block;
+        margin: 0 0.5rem 0.5rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="#home" class="nav-link active">Beranda</a>
+    <a href="#menu" class="nav-link">Menu</a>
+    <a href="#about" class="nav-link">Tentang</a>
+    <a href="#contact" class="nav-link">Kontak</a>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="logo">Pizza Jaya</div>
+      <p class="tagline">UMKM Pizza khas dengan bahan terbaik dan rasa yang tak tertandingi</p>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <h1>Pizza Yang Menggugah Selera</h1>
+    <p>Pizza tangan dibuat dengan cinta, menggunakan bahan pilihan dari petani lokal dan queuing hari.</p>
+  </section>
+
+  <!-- Menu Section -->
+  <section class="menu" id="menu">
+    <h2>Menu Kami</h2>
+    <div class="pizza-grid">
+      <div class="pizza-card">
+        <div class="pizza-img">🍕</h3>
+        <h3>Margherita</h3>
+        <p>Saus tomat, mozzarella, basil segar</p>
+        <p class="harga">Rp 55.000</p>
+      </div>
+      <div class="pizza-card">
+        <div class="pizza-img">🍕</h3>
+        <h3>Peperoni</h3>
+        <p>Saus tomat, mozzarella, peperoni</p>
+        <p class="harga">Rp 60.000</p>
+      </div>
+      <div class="pizza-card">
+        <div class="pizza-img">🍕</h3>
+        <h3>Saus Tiram Ayam</h3>
+        <p>Saus tiram, ayam, jamur, mozarella</p>
+        <p class="harga">Rp 65.000</p>
+      </div>
+      <div class="pizza-card">
+        <div class="pizza-img">🍕</h3>
+        <h3>Seafood</h3>
+        <p>Saus tomat, seafood segar, mozarella</p>
+        <p class="harga">Rp 75.000</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <h2>Tentang Pizza Jaya</h2>
+    <p>Kami adalah UMKM pizza yang berdedikasi menyajikan pizza hasil tangan dengan resep rahasia dan bahan terbaik. Setiap pizza dibuat dengan perhatian detail dari pembuatan krop until penuangan saus.</p>
+    <p>Kami percaya bahwa pizza yang baik adalah pizza yang dibuat dengan cinta dan disajikan dengan senang hati.</p>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <h2>Kontak Kami</h2>
+    <p class="telpon">📞 0812-3456-7890</p>
+    <p>📍 Jl. Merdeka No. 123, Kota</p>
+    <p>⏰ Operasional: Senin - Minggu, 10:00 - 22:00</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Pizza Jaya • Dibangun dengan ❤️ • 2024</p>
+  </footer>
+
+</body>
+</html>

@@ -205,43 +205,12 @@ export function evaluatePromptComplexity(
   const tier: ComplexityProfile['tier'] =
     overallScore >= 7 ? 'high' : overallScore >= 4 ? 'medium' : 'low';
 
-  let strategy: OrchestrationStrategy;
-  let rationale: string;
+  const strategy: OrchestrationStrategy = 'deepseek-only';
+  const rationale = 'DeepSeek-only pipeline: all generation routed to DeepSeek Engineer, no Haiku branching.';
 
-  const haikuReady = isKeyConfigured(process.env.ANTHROPIC_API_KEY);
-  const deepseekReady = isKeyConfigured(process.env.DEEPSEEK_API_KEY);
-
-  if (analysis.intent === 'create') {
-    if (uiScore > codeScore + 2 && overallScore <= 5 && (haikuReady || !deepseekReady)) {
-      strategy = 'haiku-only';
-      rationale = `UI-focused prompt (UI ${uiScore}/10 vs Code ${codeScore}/10) routed directly to Claude Haiku.`;
-    } else if (codeScore > uiScore + 2 && overallScore <= 5) {
-      strategy = 'deepseek-only';
-      rationale = `Logic-focused prompt (Code ${codeScore}/10 vs UI ${uiScore}/10) routed directly to DeepSeek Engineer.`;
-    } else {
-      strategy = 'hybrid-dual';
-      rationale = haikuReady
-        ? `Full-stack generation (${tier}, ${overallScore}/10) toggles Haiku for UI/UX assets + DeepSeek for React code.`
-        : `Full-stack generation (${tier}, ${overallScore}/10) uses deterministic UI blueprint + DeepSeek for React code.`;
-    }
-  } else {
-    if (uiScore >= codeScore + 2 && codeScore <= 3) {
-      strategy = 'haiku-only';
-      rationale = `UI/UX styling & asset revision (UI ${uiScore}/10, Code ${codeScore}/10) handled by Claude Haiku.`;
-    } else if (codeScore >= uiScore + 2 && uiScore <= 3) {
-      strategy = 'deepseek-only';
-      rationale = `Code & logic revision (Code ${codeScore}/10, UI ${uiScore}/10) handled by DeepSeek Engineer.`;
-    } else if (overallScore <= 4 && uiScore >= codeScore) {
-      strategy = 'haiku-only';
-      rationale = `Lightweight visual revision (${overallScore}/10) routed to Claude Haiku.`;
-    } else if (overallScore <= 4) {
-      strategy = 'deepseek-only';
-      rationale = `Targeted code revision (${overallScore}/10) routed to DeepSeek Engineer.`;
-    } else {
-      strategy = 'hybrid-dual';
-      rationale = `Complex multi-layer revision (${overallScore}/10) orchestrates Haiku UI/UX + DeepSeek code synthesis.`;
-    }
-  }
+  // Note: The original routing logic is bypassed to enforce deepseek-only strategy
+  // as per MVP requirements. The prompt analysis scores are still computed but not
+  // used for strategy determination.
 
   const recommendedModels = resolveRecommendedModels(strategy, tier, codeScore);
   const recommendations = buildStrategyRecommendations(
