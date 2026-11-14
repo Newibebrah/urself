@@ -1,0 +1,6 @@
+{
+  "name": "urself.online",
+  "description": "Build Your Own Website with AI — AI-first SaaS for generating production-ready React apps from prompts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
