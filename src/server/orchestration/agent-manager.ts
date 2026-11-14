@@ -20,6 +20,7 @@ import { runSelfHealingLoop } from '../pipeline/self-healing.ts';
 import { StreamingJsonFileParser } from '../pipeline/streaming-json-parser.ts';
 import { selectBlueprintPhase1, type TemplateContract } from '../pipeline/template-contracts.ts';
 import { evaluatePromptComplexity, resolveComplexityProfile } from './complexity-router.ts';
+import { executeTool, availableTools, getProjectSummary, listProjectFiles, readProjectFile, searchProjectFiles } from '../pipeline/agentic-engine';
 
 function isApiKeyReady(value?: string): boolean {
   return Boolean(value && value.trim().length > 0 && !value.trim().startsWith('MY_'));
@@ -372,6 +373,13 @@ export class AgentManager {
     const phase1 = await selectBlueprintPhase1(request.prompt, analysis, workspace.files);
     const ragPatterns = retrieveRelevantPatterns(request.prompt, phase1.templateId, 3);
 
+    // Project Context Engine: Retrieve relevant files and summarize
+    const projectSummary = getProjectSummary(workspace.files);
+    const relevantFiles = await listProjectFiles(workspace.id);
+    const searchResults = await searchProjectFiles(workspace.id, request.prompt, (path) => 
+      path.includes('src/components') || path.includes('src/pages')
+    );
+
     const blueprintMeta = {
       templateId: phase1.templateId,
       displayName: phase1.displayName,
@@ -385,6 +393,11 @@ export class AgentManager {
       category: p.category,
       score: p.score,
     }));
+
+    // Append project context to system prompt (limited to avoid token overflow)
+    const contextBlock = relevantFiles.slice(0, 5).map(f => 
+      `${f.replace(/^\/projects\/[^/]+\//, '')}: ${workspace.files.find(w => w.path === f)?.content?.substring(0, 200).replace(/\n/g, ' ') || ''}`
+    ).filter(Boolean).join('\n\n');
 
     const selectedUiModel = complexity.recommendedModels.uiModel;
     const selectedCodeModel = complexity.recommendedModels.codeModel;
