@@ -6,7 +6,7 @@
   "installCommand": "npm install --legacy-peer-deps",
   "rewrites": [
     {
-      "source": "/((?!assets/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
