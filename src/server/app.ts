@@ -1,19 +1,17 @@
 import 'dotenv/config';
-import path from 'node:path';
 import express, { type Request, type Response } from 'express';
-import { createServer as createViteServer } from 'vite';
 import { z } from 'zod';
-import type { ComplexityProfile, GenerateRequest } from './src/features/generation/types.ts';
-import type { ProjectFile } from './src/features/projects/types.ts';
-import { agentManager } from './src/server/orchestration/agent-manager.ts';
-import { requestDeepSeekRepair } from './src/server/pipeline/deepseek-engineer.ts';
-import { compilePreviewWithEsbuild } from './src/server/pipeline/esbuild-preview.ts';
-import { retrieveRelevantPatterns, UI_PATTERN_CORPUS } from './src/server/pipeline/pattern-rag.ts';
-import { analyzePrompt } from './src/server/pipeline/prompt-analyzer.ts';
-import { runSelfHealingLoop } from './src/server/pipeline/self-healing.ts';
-import { TEMPLATE_CONTRACTS, type TemplateId } from './src/server/pipeline/template-contracts.ts';
-import { createZipArchive } from './src/server/pipeline/zip-exporter.ts';
-import { projectStore } from './src/server/store/project-store.ts';
+import type { ComplexityProfile, GenerateRequest } from '../features/generation/types.ts';
+import type { ProjectFile } from '../features/projects/types.ts';
+import { agentManager } from './orchestration/agent-manager.ts';
+import { requestDeepSeekRepair } from './pipeline/deepseek-engineer.ts';
+import { compilePreviewWithEsbuild } from './pipeline/esbuild-preview.ts';
+import { retrieveRelevantPatterns, UI_PATTERN_CORPUS } from './pipeline/pattern-rag.ts';
+import { analyzePrompt } from './pipeline/prompt-analyzer.ts';
+import { runSelfHealingLoop } from './pipeline/self-healing.ts';
+import { TEMPLATE_CONTRACTS, type TemplateId } from './pipeline/template-contracts.ts';
+import { createZipArchive } from './pipeline/zip-exporter.ts';
+import { projectStore } from './store/project-store.ts';
 
 function isConfigured(val?: string): boolean {
   return Boolean(val && val.trim().length > 0 && !val.trim().startsWith('MY_'));
@@ -97,9 +95,40 @@ const UpdateProjectSchema = z.object({
   promptState: PromptStatePatchSchema.optional(),
 });
 
-async function startServer() {
+export function createApp(): express.Express {
   const app = express();
+  app.set('trust proxy', true);
   app.use(express.json({ limit: '2mb' }));
+
+  // CORS — only needed when the SPA is served from a different origin than this API
+  // (e.g. frontend on Vercel + backend on Railway/Render via VITE_API_BASE_URL).
+  const allowedOrigins = (process.env.CORS_ORIGIN ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  app.use((req: Request, res: Response, next) => {
+    const origin = req.headers.origin;
+    const isAllowed =
+      allowedOrigins.length === 0 ||
+      allowedOrigins.includes('*') ||
+      (origin ? allowedOrigins.includes(origin) : false);
+
+    if (origin && isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+    res.setHeader('Access-Control-Allow-Headers', 'content-type, authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Max-Age', '86400');
+
+    if (req.method === 'OPTIONS') {
+      res.status(204).end();
+      return;
+    }
+    next();
+  });
 
   // Capability health endpoint (never returns secret values)
   app.get('/api/health', (_req: Request, res: Response) => {
@@ -110,7 +139,18 @@ async function startServer() {
         deepseekConfigured: isConfigured(process.env.DEEPSEEK_API_KEY),
       },
       bundler: 'esbuild',
+      storage: projectStore.storageKind(),
     });
+  });
+
+  // Session endpoint — auth is not wired to Supabase yet, so the API runs in demo mode.
+  app.get('/api/auth/me', (_req: Request, res: Response) => {
+    res.json({ user: null, mode: 'demo' });
+  });
+
+  // Account deletion — accepted locally in demo mode so the UI can complete the flow.
+  app.delete('/api/account', (_req: Request, res: Response) => {
+    res.json({ ok: true, mode: 'demo' });
   });
 
   // Projects CRUD & Workspace Initialization
@@ -563,28 +603,5 @@ async function startServer() {
     }
   });
 
-  // Vite dev middleware vs static production dist
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distDir = path.resolve(process.cwd(), 'dist');
-    app.use(express.static(distDir));
-    app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(distDir, 'index.html'));
-    });
-  }
-
-  const port = Number(process.env.PORT ?? 3000);
-  app.listen(port, '0.0.0.0', () => {
-    console.log(`urself.online server listening on http://localhost:${port}`);
-  });
+  return app;
 }
-
-startServer().catch((err) => {
-  console.error('Failed to start server:', err);
-  process.exit(1);
-});

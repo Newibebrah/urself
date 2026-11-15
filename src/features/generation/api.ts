@@ -1,7 +1,8 @@
+import { apiUrl } from '../../lib/api-base';
 import type { GenerateChunk, GenerateRequest, GenerationStream } from './types';
 
 export async function* streamGeneration(request: GenerateRequest): GenerationStream {
-  const response = await fetch('/api/generate', {
+  const response = await fetch(apiUrl('/api/generate'), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(request),

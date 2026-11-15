@@ -1,3 +1,4 @@
+import { apiUrl } from '../../lib/api-base';
 import type { BuilderMessage } from '../../types';
 import type {
   CreateProjectInput,
@@ -26,7 +27,7 @@ export interface UpdateProjectPayload {
 }
 
 export async function fetchProjects(): Promise<Project[]> {
-  const res = await fetch('/api/projects');
+  const res = await fetch(apiUrl('/api/projects'));
   if (!res.ok) throw new Error('Failed to load projects');
   const data = (await res.json()) as { projects: Project[] };
   return data.projects;
@@ -38,7 +39,7 @@ export async function createProject(
   const payload: CreateProjectInput =
     typeof input === 'string' ? { name: input } : input;
 
-  const res = await fetch('/api/projects', {
+  const res = await fetch(apiUrl('/api/projects'), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),
@@ -48,7 +49,7 @@ export async function createProject(
 }
 
 export async function fetchProjectDetail(id: string): Promise<ProjectDetailResponse> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}`);
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}`));
   if (!res.ok) throw new Error('Project not found');
   return (await res.json()) as ProjectDetailResponse;
 }
@@ -57,7 +58,7 @@ export async function updateProject(
   id: string,
   patch: UpdateProjectPayload
 ): Promise<ProjectDetailResponse> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, {
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}`), {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(patch),
@@ -71,7 +72,7 @@ export async function saveProjectFiles(
   files: ProjectFile[],
   label?: string
 ): Promise<ProjectDetailResponse> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}/files`, {
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}/files`), {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(label ? { files, label } : { files }),
@@ -86,7 +87,7 @@ export async function labelProjectRevision(
   label: string
 ): Promise<ProjectDetailResponse> {
   const res = await fetch(
-    `/api/projects/${encodeURIComponent(id)}/revisions/${encodeURIComponent(revisionId)}`,
+    apiUrl(`/api/projects/${encodeURIComponent(id)}/revisions/${encodeURIComponent(revisionId)}`),
     {
       method: 'PATCH',
       headers: { 'content-type': 'application/json' },
@@ -102,7 +103,7 @@ export async function rollbackProjectRevision(
   revisionId: string
 ): Promise<ProjectDetailResponse> {
   const res = await fetch(
-    `/api/projects/${encodeURIComponent(id)}/revisions/${encodeURIComponent(revisionId)}/rollback`,
+    apiUrl(`/api/projects/${encodeURIComponent(id)}/revisions/${encodeURIComponent(revisionId)}/rollback`),
     {
       method: 'POST',
     }
@@ -115,7 +116,7 @@ export async function updatePromptState(
   id: string,
   patch: Partial<ProjectPromptState> & { reset?: boolean }
 ): Promise<ProjectDetailResponse> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}/prompt-state`, {
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}/prompt-state`), {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(patch),
@@ -128,7 +129,7 @@ export async function branchProject(
   id: string,
   name?: string
 ): Promise<ProjectDetailResponse> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}/branch`, {
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}/branch`), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(name ? { name } : {}),
@@ -138,7 +139,7 @@ export async function branchProject(
 }
 
 export async function duplicateProject(id: string): Promise<Project> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}/duplicate`, {
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}/duplicate`), {
     method: 'POST',
   });
   if (!res.ok) throw new Error('Failed to duplicate project');
@@ -146,14 +147,14 @@ export async function duplicateProject(id: string): Promise<Project> {
 }
 
 export async function deleteProject(id: string): Promise<void> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, {
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}`), {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Failed to delete project');
 }
 
 export function getExportZipUrl(id: string): string {
-  return `/api/projects/${encodeURIComponent(id)}/export`;
+  return apiUrl(`/api/projects/${encodeURIComponent(id)}/export`);
 }
 
 export interface SelfHealApiResponse {
@@ -171,7 +172,7 @@ export async function selfHealProjectFiles(
   id: string,
   payload: { files: ProjectFile[]; error?: string; prompt?: string }
 ): Promise<SelfHealApiResponse> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(id)}/self-heal`, {
+  const res = await fetch(apiUrl(`/api/projects/${encodeURIComponent(id)}/self-heal`), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),

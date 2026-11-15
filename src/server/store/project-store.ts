@@ -301,13 +301,38 @@ function normalizeFiles(files: ProjectFile[]): ProjectFile[] {
   return Array.from(map.values());
 }
 
+/**
+ * Resolves where workspaces are persisted.
+ *
+ * - Serverless hosts (Vercel/Lambda) mount the project read-only, so the only
+ *   writable location is `/tmp`. That file survives warm invocations but is lost
+ *   on cold starts, which is fine for the MVP demo data.
+ * - URSELF_DATA_DIR lets an external host (Railway/Render/Fly) use a volume.
+ * - URSELF_STORAGE=memory disables persistence entirely.
+ */
+function resolveStorageFilePath(): string | null {
+  if (process.env.URSELF_STORAGE === 'memory') return null;
+  if (process.env.URSELF_DATA_DIR) {
+    return path.resolve(process.env.URSELF_DATA_DIR, 'workspaces.json');
+  }
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return path.join('/tmp', 'urself', 'workspaces.json');
+  }
+  return path.resolve(process.cwd(), '.data', 'workspaces.json');
+}
+
 export class ProjectStore {
   private workspaces = new Map<string, StoredWorkspace>();
   private readonly storageFilePath: string | null;
 
-  constructor(storageFilePath: string | null = path.resolve(process.cwd(), '.data', 'workspaces.json')) {
+  constructor(storageFilePath: string | null = resolveStorageFilePath()) {
     this.storageFilePath = storageFilePath;
     this.hydrate();
+  }
+
+  /** Human readable persistence mode, surfaced by /api/health. */
+  storageKind(): 'memory' | 'file' {
+    return this.storageFilePath ? 'file' : 'memory';
   }
 
   private hydrate(): void {

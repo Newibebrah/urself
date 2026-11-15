@@ -1,8 +1,9 @@
+import { apiUrl } from '../../lib/api-base';
 import type { BuildPreview } from './types';
 
 export const buildPreview: BuildPreview = async ({ files }) => {
   try {
-    const response = await fetch('/api/preview', {
+    const response = await fetch(apiUrl('/api/preview'), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ files }),
