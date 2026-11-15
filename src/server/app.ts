@@ -131,7 +131,7 @@ export function createApp(): express.Express {
   });
 
   // Capability health endpoint (never returns secret values)
-  app.get('/api/health', (_req: Request, res: Response) => {
+  app.get('/api/health', (req: Request, res: Response) => {
     res.json({
       ok: true,
       providers: {
@@ -140,6 +140,7 @@ export function createApp(): express.Express {
       },
       bundler: 'esbuild',
       storage: projectStore.storageKind(),
+      requestPath: req.originalUrl,
     });
   });
 

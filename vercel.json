@@ -7,13 +7,13 @@
   "functions": {
     "api/index.ts": {
       "maxDuration": 60,
-      "memory": 1024
+      "includeFiles": "node_modules/{react,react-dom,scheduler,lucide-react,clsx,tailwind-merge,date-fns,sonner,motion,framer-motion,tslib,esbuild,@esbuild}/**"
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": "/api?__urself_path=$1"
     },
     {
       "source": "/:path((?!api(?:/|$)).*)",

@@ -20,7 +20,7 @@ import { runSelfHealingLoop } from '../pipeline/self-healing.ts';
 import { StreamingJsonFileParser } from '../pipeline/streaming-json-parser.ts';
 import { selectBlueprintPhase1, type TemplateContract } from '../pipeline/template-contracts.ts';
 import { evaluatePromptComplexity, resolveComplexityProfile } from './complexity-router.ts';
-import { executeTool, availableTools, getProjectSummary, listProjectFiles, readProjectFile, searchProjectFiles } from '../pipeline/agentic-engine';
+import { executeTool, availableTools, getProjectSummary, listProjectFiles, readProjectFile, searchProjectFiles } from '../pipeline/agentic-engine.ts';
 
 function isApiKeyReady(value?: string): boolean {
   return Boolean(value && value.trim().length > 0 && !value.trim().startsWith('MY_'));
